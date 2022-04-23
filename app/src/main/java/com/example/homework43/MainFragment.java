@@ -17,19 +17,29 @@ public class MainFragment extends Fragment implements OnItemClick {
 
     private FragmentMainBinding binding;
     private ArrayList <Mainlands> mainlands ;
+    private MainlandAdapter mainlandAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mainlandAdapter = new MainlandAdapter(requireContext());
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentMainBinding.inflate(LayoutInflater.from(requireActivity()),container,false);
         return binding.getRoot();
+
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        MainlandAdapter mainlandAdapter = new MainlandAdapter(mainlands, requireContext(),this) ;
+        binding.mainRecycle.setAdapter(mainlandAdapter);
          loadData();
-         binding.mainRecycle.setAdapter(mainlandAdapter);
+        mainlandAdapter.setMainlands(mainlands);
+        mainlandAdapter.setItemClick(this);
     }
 
     private void loadData() {
@@ -49,7 +59,7 @@ public class MainFragment extends Fragment implements OnItemClick {
         bundle.putString("KEY",mainlands.getName());
         SecondFragment secondFragment = new SecondFragment();
         secondFragment.setArguments(bundle);
-        
+
 
         requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, secondFragment).
                 addToBackStack(" ").commit();
